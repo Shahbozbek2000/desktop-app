@@ -39,7 +39,7 @@ function App() {
           textTransform: "uppercase",
         }}
       >
-        1-eski versiya
+        2-yangi versiya
       </p>
 
       {updateAvailable && (
