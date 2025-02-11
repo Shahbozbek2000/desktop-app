@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "../../dist-electron",
+    "skipLibCheck": true,
+    "typeRoots": ["../types", "../../node_modules/@types"],
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "moduleResolution": "nodenext"
+  },
+  "include": ["*.ts", "../types/**/*.d.ts"]
+}
