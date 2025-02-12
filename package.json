@@ -14,7 +14,8 @@
     "transpile:electron": "tsc --project src/electron/tsconfig.json",
     "dist:mac": "npm run transpile:electron && npm run build && electron-builder --mac --arm64",
     "dist:win": "npm run transpile:electron && npm run build && electron-builder --win --x64",
-    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
+    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64",
+    "publish": "electron-builder -p always"
   },
   "dependencies": {
     "electron-log": "^5.3.0",
@@ -44,16 +45,16 @@
   "build": {
     "appId": "com.n-ziermann.mini-app",
     "productName": "Desktop ilova",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "Shahbozbek2000",
-        "repo": "desktop-app"
-      }
-    ],
+    "publish": {
+      "provider": "github",
+      "owner": "Shahbozbek2000",
+      "repo": "desktop-app",
+      "private": true,
+      "releaseType": "release"
+    },
     "files": [
       "dist-electron/**/*",
-      "dist-react/**/*"
+      "dist/**/*"
     ],
     "directories": {
       "output": "release"
@@ -61,12 +62,20 @@
     "mac": {
       "target": [
         "dmg"
-      ]
+      ],
+      "category": "public.app-category.utilities"
     },
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility"
     }
   }
 }
