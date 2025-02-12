@@ -10,5 +10,5 @@
     "noEmitOnError": true,
     "moduleResolution": "nodenext"
   },
-  "include": ["*.ts", "../types/**/*.d.ts"]
+  "include": ["*.ts", "../types/**/*.d.ts", "preload.cts"]
 }
