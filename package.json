@@ -1,7 +1,7 @@
 {
   "name": "mini-app",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
   },
   "dependencies": {
+    "electron-log": "^5.3.0",
     "electron-updater": "^6.3.9",
     "os-utils": "^0.0.14",
     "react": "^19.0.0",
@@ -47,14 +48,12 @@
       {
         "provider": "github",
         "owner": "Shahbozbek2000",
-        "repo": "https://github.com/Shahbozbek2000/desktop-app",
-        "private": false
+        "repo": "desktop-app"
       }
     ],
     "files": [
       "dist-electron/**/*",
-      "dist-react/**/*",
-      "package.json"
+      "dist-react/**/*"
     ],
     "directories": {
       "output": "release"
