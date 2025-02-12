@@ -39,7 +39,7 @@ function App() {
           textTransform: "uppercase",
         }}
       >
-        1.0.1 versiya
+        1.0.2 versiya
       </p>
 
       {updateAvailable && (
