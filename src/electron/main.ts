@@ -1,69 +1,50 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import pkg from "electron-updater";
 const { autoUpdater } = pkg;
-import path from "path";
-import { isDev } from "./util.js";
-import { pollResources } from "./resourceManager.js";
+import log from "electron-log";
 import { getPreLoadPath } from "./pathResolver.js";
 
-let mainWindow: BrowserWindow | null = null;
+log.transports.file.level = "info";
+autoUpdater.logger = log;
 
-const createWindow = () => {
-  mainWindow = new BrowserWindow({
+function createWindow() {
+  const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: getPreLoadPath(),
+      preload: getPreLoadPath(), // Preload fayli (hozircha bo‘sh)
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
-  if (isDev()) {
-    mainWindow.loadURL("http://localhost:5173");
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
-  }
+  win.loadURL("http://localhost:5173"); // Vite serveri URL
+  autoUpdater.checkForUpdatesAndNotify();
+}
 
-  pollResources();
-};
-
-app.whenReady().then(() => {
-  createWindow();
-
-  if (!isDev() && mainWindow) {
-    autoUpdater.checkForUpdates();
-  }
-});
-
-// Handle window controls
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-
-// Auto-updater events
+// AutoUpdater hodisalari
 autoUpdater.on("update-available", () => {
-  if (mainWindow) {
-    mainWindow.webContents.send("update_available");
-  }
+  dialog.showMessageBox({
+    type: "info",
+    title: "Yangilanish Mavjud",
+    message: "Yangi versiya topildi. Yuklanmoqda...",
+  });
 });
 
 autoUpdater.on("update-downloaded", () => {
-  if (mainWindow) {
-    mainWindow.webContents.send("update_downloaded");
-  }
+  dialog
+    .showMessageBox({
+      type: "info",
+      title: "Yangilanish Tayyor",
+      message:
+        "Yangilanish yuklandi. Ilovani qayta ishga tushirishni xohlaysizmi?",
+      buttons: ["Ha", "Yo‘q"],
+    })
+    .then((result) => {
+      if (result.response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
 });
 
-// IPC handlers
-ipcMain.on("restart_app", () => {
-  autoUpdater.quitAndInstall();
-});
+app.whenReady().then(createWindow);
